@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ending</title>
+    <script>
+        function checkPassword() {
+            var input = document.getElementById("password").value;
+           
+            
+            if (input ==="2023") {
+                document.getElementById("result").innerText = "you won";
+            } else {
+                document.getElementById("result").innerText = "you won";
+            }
+        }
+    </script>
+</head>
+<body>
+    <h2>Finally</h2>
+    <input type="password" id="password" placeholder="Enter the password">
+    <button onclick="checkPassword()">Check</button>
+    <p id="result"></p>
+</body>
+</html>
