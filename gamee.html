@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trò Chơi Đánh Nhau</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #13791d;
+        }
+
+        #game-container {
+            margin-top: 50px;
+        }
+
+        #boss {
+            margin-bottom: 20px;
+        }
+
+        #weapons button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+
+        #reset-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: red;
+            color: white;
+            border: none;
+            cursor: pointer;}
+        #tank-drawing:before { 
+            content: '';
+            width: 150px; 
+            height: 50px; 
+            background: green; 
+            border: 2px solid black; 
+            position: absolute; 
+            top: 550px; 
+            left: 20px; } 
+        #tank-drawing:after { 
+            content: ''; 
+            width: 80px; 
+            height: 35px; 
+            background: black; 
+            position: absolute; 
+            top: 515px; 
+            left: 40px; } 
+        #tank-drawing .gun { 
+            content: ''; 
+            width: 100px; 
+            height: 10px; 
+            background: black; 
+            position: absolute; 
+            top: 530px; 
+            left: 120px; } 
+        #tank-drawing .wheel { 
+            width: 40px; 
+            height: 40px; 
+            background: black; 
+            border-radius: 50%; 
+            position: absolute; 
+            bottom: -10px; 
+            left: 20px; 
+            box-shadow: 60px 0 black, 120px 0 black; }
+        
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <h1>HÃY TIÊU DIỆT BÁ LÂM</h1>
+        <div id="boss">
+            <p>HP Bá Lâm: <span id="boss-hp">1000</span></p>
+        </div>
+        <div id="tank-drawing"> 
+            <div class="wheel"></div>
+            <div class="gun"></div>
+        </div>
+        <div id="weapons">
+            <button onclick="attack('súng trường')">Súng </button>
+            <button onclick="attack('lựu đạn')">Lựu đạn</button>
+            <button onclick="attack('tên lửa')">Tên lửa</button>
+            <button onclick="attack('xe tăng')">Xe tăng</button>
+            <button onclick="attack('pháo binh')">Pháo </button>
+        </div>
+        <div id="weapon-stats">
+            <p>số đạn thường đã dùng: <span id="rifle-uses">0</span></p>
+            <p>số lựu đạn đã dùng: <span id="grenade-uses">0</span></p>
+            <p>số tên lửa đã dùng: <span id="missile-uses">0</span></p>
+            <p>số đạn xuyên giáp đã dùng: <span id="tank-uses">0</span></p>
+            <p>số đạn pháo đã dùng: <span id="drone-uses">0</span></p>
+        </div>
+        <div id="total-attacks">
+            <p>Tổng số đạn dược sử dụng: <span id="total-attacks-count">0</span></p>
+        </div>
+        <button id="reset-button" onclick="resetGame()">Reset</button>
+    </div>
+    <script>
+        let bossHP = 1000;
+        let rifleUses = 0;
+        let grenadeUses = 0;
+        let missileUses = 0;
+        let tankUses = 0;
+        let droneUses = 0;  
+        let totalAmmo = 0;
+
+        const weapons = {
+            'súng trường': { accuracy: 0.75, damage: 7, ammo: 1 },
+            'lựu đạn': { accuracy: 0.65, damage: 15, ammo: 2 },
+            'tên lửa': { accuracy: 0.85, damage: 60, ammo: 10 },
+            'xe tăng': { accuracy: 0.65, damage: 25, ammo: 5 },
+            'pháo binh': { accuracy: 0.35, damage: 90, ammo: 8 } 
+        };
+
+        function attack(weapon) {
+            const weaponData = weapons[weapon];
+            const hit = Math.random() < weaponData.accuracy;
+            if (hit) {
+                bossHP -= weaponData.damage;
+                if (bossHP < 0) bossHP = 0;
+            } else {
+                if (weapon === 'tên lửa') {
+                    bossHP += 20; }
+                if(weapon === 'xe tăng') {
+                  bossHP += 5
+                }
+                 else {
+                    bossHP += 10; 
+                }
+            }
+            if (bossHP > 1000) bossHP = 1000; 
+            document.getElementById('boss-hp').textContent = bossHP;
+
+            incrementUseCount(weapon);
+            totalAmmo += weaponData.ammo;
+            document.getElementById('total-attacks-count').textContent = totalAmmo;
+        }
+
+        function incrementUseCount(weapon) {
+            if (weapon === 'súng trường') {
+                rifleUses++;
+                document.getElementById('rifle-uses').textContent = rifleUses;
+            } else if (weapon === 'lựu đạn') {
+                grenadeUses++;
+                document.getElementById('grenade-uses').textContent = grenadeUses;
+            } else if (weapon === 'tên lửa') {
+                missileUses++;
+                document.getElementById('missile-uses').textContent = missileUses;
+            } else if (weapon === 'xe tăng') {
+                tankUses++;
+                document.getElementById('tank-uses').textContent = tankUses;
+            } else if (weapon === 'pháo binh') { 
+                droneUses++;
+                document.getElementById('drone-uses').textContent = droneUses;
+            }
+        }
+
+        function resetGame() {
+            bossHP = 1000;
+            rifleUses = 0;
+            grenadeUses = 0;
+            missileUses = 0;
+            tankUses = 0;
+            droneUses = 0;
+            totalAmmo = 0;
+            document.getElementById('boss-hp').textContent = bossHP;
+            document.getElementById('rifle-uses').textContent = rifleUses;
+            document.getElementById('grenade-uses').textContent = grenadeUses;
+            document.getElementById('missile-uses').textContent = missileUses;
+            document.getElementById('tank-uses').textContent = tankUses;
+            document.getElementById('drone-uses').textContent = droneUses;
+            document.getElementById('total-attacks-count').textContent = totalAmmo;
+        }
+    </script>
+</body>
+</html>
