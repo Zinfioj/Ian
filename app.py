@@ -1,4 +1,5 @@
 import streamlit as st
+import subprocess
 import os
 
 # Đường dẫn tệp tương đối
@@ -8,6 +9,20 @@ FILE_PATH = os.path.join(os.path.dirname(__file__), "db.txt")
 def save_data(file_path, name, question):
     with open(file_path, 'a', encoding='utf-8') as file:
         file.write(f'{name},{question}\n')
+    commit_and_push_changes()
+
+# Hàm để commit và push thay đổi lên GitHub
+def commit_and_push_changes():
+    try:
+        # Add thay đổi vào staging area
+        subprocess.run(["git", "add", FILE_PATH], check=True)
+        # Commit thay đổi với thông điệp
+        subprocess.run(["git", "commit", "-m", "Update db.txt with new user data"], check=True)
+        # Push thay đổi lên repository
+        subprocess.run(["git", "push"], check=True)
+        st.success("Changes have been pushed to the repository!")
+    except subprocess.CalledProcessError as e:
+        st.error(f"An error occurred while pushing changes to the repository: {e}")
 
 # Giao diện người dùng
 st.title("User Data Collection")
