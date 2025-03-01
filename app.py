@@ -1,47 +1,18 @@
 import streamlit as st
-import subprocess
-import os
 
-# Đường dẫn tệp tương đối
-FILE_PATH = os.path.join(os.path.dirname(__file__), "db.txt")
+# Tiêu đề của ứng dụng
+st.title('Ứng dụng Web với Streamlit')
 
-# Hàm để lưu dữ liệu người dùng vào tệp văn bản
-def save_data(file_path, name, question):
-    with open(file_path, 'a', encoding='utf-8') as file:
-        file.write(f'{name},{question}\n')
-    commit_and_push_changes()
+def save(file_path,text):
+    with open(file_path, "a",encoding='utf-8') as file:
+        file.write(f'{text}\n')
+        
+st.write('Hi!')
 
-# Hàm để commit và push thay đổi lên GitHub
-def commit_and_push_changes():
-    try:
-        # Add thay đổi vào staging area
-        subprocess.run(["git", "add", FILE_PATH], check=True)
-        # Commit thay đổi với thông điệp
-        subprocess.run(["git", "commit", "-m", "Update db.txt with new user data"], check=True)
-        # Push thay đổi lên repository
-        subprocess.run(["git", "push"], check=True)
-        st.success("Changes have been pushed to the repository!")
-    except subprocess.CalledProcessError as e:
-        st.error(f"An error occurred while pushing changes to the repository: {e}")
+name = st.text_input('Nhập tên của bạn:')
+st.write(f'Xin chào, {name}!')
 
-# Giao diện người dùng
-st.title("User Data Collection")
+st.write('hãy hỏi 1 điều gì đó ')
+ques = st.text_input('Nhập câu hỏi:')
 
-name = st.text_input("Name")
-question = st.text_input("Question")
-
-if st.button("Submit"):
-    if name and question:
-        save_data(FILE_PATH, name, question)
-        st.success("User data has been saved!")
-    else:
-        st.error("Please enter both name and question.")
-
-# Đọc và hiển thị dữ liệu đã lưu
-if st.button("Show Data"):
-    try:
-        with open(FILE_PATH, 'r', encoding='utf-8') as file:
-            data = file.read()
-        st.text_area("Stored Data", data)
-    except FileNotFoundError:
-        st.error("The data file does not exist.")
+save("db.txt",f'{name}:::{ques}')
