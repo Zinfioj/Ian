@@ -6,7 +6,7 @@ if str(name)[:len(name)-6] != 'gay123':
     st.write('nhập lại tên của bạn')
     name = st.text_input(':)))')
 
-st.wrtie('nhập mật khẩu')
+st.write('nhập mật khẩu')
 password = st.text_input('password')
 
 if str(password.lower()) != 'taobigay':
