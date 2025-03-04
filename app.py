@@ -7,9 +7,9 @@ while str(name)[:len(name)-6] != 'gay123':
     name = st.text_input(':)))')
 
 st.wrtie('nhập mật khẩu')
-passs = st.text_input('password')
+password = st.text_input('password')
 
-while str(passs.lower()) != 'taobigay':
+while str(password.lower()) != 'taobigay':
     st.write('nhập lại mật khẩu')
     pass = st.text_input('bạn có bị gay không')
 st.write('chào '+name[:len(name)-6])
