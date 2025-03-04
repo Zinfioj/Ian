@@ -11,5 +11,5 @@ password = st.text_input('password')
 
 while str(password.lower()) != 'taobigay':
     st.write('nhập lại mật khẩu')
-    pass = st.text_input('bạn có bị gay không')
+    password = st.text_input('bạn có bị gay không')
 st.write('chào '+name[:len(name)-6])
