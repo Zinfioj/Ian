@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Open World Game</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+        #gameCanvas {
+            display: block;
+            background-color: #f0f0f0;
+        }
+        #coordinates {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(255, 255, 255, 0.7);
+            padding: 5px;
+            border-radius: 5px;
+        }
+        #score {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.7);
+            padding: 5px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas"></canvas>
+    <div id="coordinates">X: 0, Y: 0</div>
+    <div id="score">Score: 0</div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const coordinatesDiv = document.getElementById('coordinates');
+        const scoreDiv = document.getElementById('score');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let player = JSON.parse(localStorage.getItem('player')) || {
+            x: canvas.width / 2,
+            y: canvas.height / 2,
+            speed: 2
+        };
+
+        let camera = {
+            x: 0,
+            y: 0,
+            width: canvas.width,
+            height: canvas.height
+        };
+
+        let objects = JSON.parse(localStorage.getItem('objects')) || [];
+        if (objects.length === 0) {
+            for (let i = 0; i < 1000; i++) { // Increased number of objects
+                objects.push({
+                    x: Math.random() * 10000 - 5000, // Increased spawn area
+                    y: Math.random() * 10000 - 5000,
+                    width: 20,
+                    height: 20,
+                    color: 'red'
+                });
+            }
+            localStorage.setItem('objects', JSON.stringify(objects));
+        }
+
+        let score = JSON.parse(localStorage.getItem('score')) || 0;
+        scoreDiv.textContent = `Score: ${score}`;
+
+        function updateCoordinates() {
+            coordinatesDiv.textContent = `X: ${player.x}, Y: ${player.y}`;
+        }
+
+        function drawPlayer() {
+            ctx.fillStyle = 'blue';
+            ctx.fillRect(player.x - camera.x - 10, player.y - camera.y - 10, 20, 20);
+        }
+
+        function drawObjects() {
+            objects.forEach(obj => {
+                ctx.fillStyle = obj.color;
+                ctx.fillRect(obj.x - camera.x, obj.y - camera.y, obj.width, obj.height);
+            });
+        }
+
+        function updateCamera() {
+            camera.x = player.x - canvas.width / 2;
+            camera.y = player.y - canvas.height / 2;
+        }
+
+        function gameLoop() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            movePlayer();
+            updateCamera();
+            drawObjects();
+            drawPlayer();
+            updateCoordinates();
+            requestAnimationFrame(gameLoop);
+        }
+
+        let keys = {};
+
+        window.addEventListener('keydown', (e) => {
+            keys[e.key] = true;
+        });
+
+        window.addEventListener('keyup', (e) => {
+            keys[e.key] = false;
+        });
+
+        function movePlayer() {
+            if (keys['ArrowUp']) player.y -= player.speed;
+            if (keys['ArrowDown']) player.y += player.speed;
+            if (keys['ArrowLeft']) player.x -= player.speed;
+            if (keys['ArrowRight']) player.x += player.speed;
+            localStorage.setItem('player', JSON.stringify(player));
+        }
+
+        canvas.addEventListener('click', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left + camera.x;
+            const mouseY = e.clientY - rect.top + camera.y;
+
+            objects = objects.filter(obj => {
+                const isClicked = mouseX >= obj.x && mouseX <= obj.x + obj.width &&
+                                  mouseY >= obj.y && mouseY <= obj.y + obj.height;
+                if (isClicked) {
+                    score++;
+                    scoreDiv.textContent = `Score: ${score}`;
+                    localStorage.setItem('score', JSON.stringify(score));
+                }
+                return !isClicked;
+            });
+
+            localStorage.setItem('objects', JSON.stringify(objects));
+        });
+
+        gameLoop();
+    </script>
+</body>
+</html>
