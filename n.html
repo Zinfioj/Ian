@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heart on Canvas</title>
+</head>
+<body>
+    <canvas id="heartCanvas" width="600" height="600" style="border:1px solid #000;"></canvas>
+    <script>
+        const canvas = document.getElementById('heartCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Vẽ trái tim lớn
+        function drawHeart() {
+            ctx.fillStyle = 'red'; // Màu trái tim
+            ctx.beginPath();
+            ctx.moveTo(300, 200); // Đỉnh trái tim
+            ctx.bezierCurveTo(150, 50, 50, 300, 300, 500); // Nửa trái trái tim
+            ctx.bezierCurveTo(550, 300, 450, 50, 300, 200); // Nửa phải trái tim
+            ctx.closePath();
+            ctx.fill();
+        }
+
+        // Hiển thị dòng chữ
+        function drawText(message) {
+            ctx.fillStyle = 'white'; // Màu chữ
+            ctx.font = '40px Arial'; // Font chữ
+            ctx.textAlign = 'center'; // Canh giữa theo chiều ngang
+            ctx.textBaseline = 'middle'; // Canh giữa theo chiều dọc
+            ctx.fillText(message, canvas.width / 2, canvas.height / 2); // Hiển thị chữ ở giữa canvas
+        }
+
+        // Gọi các hàm để vẽ
+        drawHeart();
+        drawText("Lys"); // Dòng chữ bất kỳ
+    </script>
+<h1>Chúc bé yew 8/3 và sn vv nháaaaaaa</h1>
+</body>
+</html>
